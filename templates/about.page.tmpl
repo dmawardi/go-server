@@ -1,4 +1,4 @@
-{{template "base"}}
+{{template "base" .}}
 {{define "content"}}
 <div class="container">
   <div class="row">
@@ -10,7 +10,10 @@
         maxime enim facere. Rem officia numquam dolores placeat velit corporis
         nesciunt!
       </p>
+      <p>
+        {{index .StringMap "test"}}
+      </p>
     </div>
   </div>
 </div>
-{{ end }}
+{{end}}
