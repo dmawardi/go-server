@@ -13,7 +13,14 @@
       <p>
         {{index .StringMap "test"}}
       </p>
+      <!-- If rempote ip is not equal to empty string -->
+      <p>
+        {{if ne (index .StringMap "remote_ip") ""}}
+        Your remote IP address is: {{index .StringMap "remote_ip"}}
+        {{else}}
+        no remote IP detected. Visit <a href="/">Home Page</a> {{ end }}
+      </p>
     </div>
   </div>
 </div>
-{{end}}
+{{ end }}

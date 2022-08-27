@@ -4,16 +4,35 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
+	"github.com/alexedwards/scs/v2"
 	"github.com/dmawardi/go-server/pkg/config"
 	"github.com/dmawardi/go-server/pkg/handlers"
 	"github.com/dmawardi/go-server/pkg/render"
 )
 
+// Init state (incl. templates)
+var app config.AppConfig
+
 const portNumber = ":8080"
 
+var session *scs.SessionManager
+
 func main() {
-	var app config.AppConfig
+	// Change this to true in production
+	app.InProduction = false
+
+	session = scs.New()
+	// Set session lifetime to 24 hours
+	session.Lifetime = 24 * time.Hour
+	// Persist when browser restarted
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	// For https set to true
+	session.Cookie.Secure = app.InProduction
+	// Set session to state variable: Session
+	app.Session = session
 
 	// create cache
 	createdCache, err := render.CreateTemplateCache()
@@ -34,14 +53,7 @@ func main() {
 	// Sets template cache for render package
 	render.SetTemplate(&app)
 
-	// Route handler
-	// http.HandleFunc("/", handlers.Repo.Home)
-	// http.HandleFunc("/about", handlers.Repo.About)
-
-	// The second argument is a handler, but not required due to above
-	// returns an error
-
-	fmt.Printf("Starting application on port: %s", portNumber)
+	fmt.Printf("Starting application on port: %s\n", portNumber)
 
 	srv := &http.Server{
 		Addr:    portNumber,

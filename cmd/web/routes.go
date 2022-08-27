@@ -6,14 +6,18 @@ import (
 	"github.com/dmawardi/go-server/pkg/config"
 	"github.com/dmawardi/go-server/pkg/handlers"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func routes(app *config.AppConfig) http.Handler {
-	// mux := pat.New()
-
-	// mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
-	// mux.Get("/about", http.HandlerFunc(handlers.Repo.About))
 	mux := chi.NewRouter()
+
+	// Use built in Chi middleware
+	mux.Use(middleware.Recoverer)
+	mux.Use(middleware.Logger)
+	mux.Use(NoSurfCSRF)
+	mux.Use(SessionLoad)
+
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
 

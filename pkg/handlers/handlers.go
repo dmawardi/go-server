@@ -30,6 +30,11 @@ func UpdateRepositoryHandlers(r *Repository) {
 
 // Home page handler
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
+	// Store IP of user
+	remoteIP := r.RemoteAddr
+	// Add a key to session to data
+	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
+
 	stringMap := make(map[string]string)
 	stringMap["boo"] = "boodoo"
 
@@ -43,6 +48,9 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 	stringMap := make(map[string]string)
 	stringMap["test"] = "Hello again"
 	stringMap["boo"] = "boodoo"
+	// Get remote ip from session data
+	remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
+	stringMap["remote_ip"] = remoteIP
 
 	render.AltRenderTemplate(w, "about.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
